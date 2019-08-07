@@ -10,6 +10,7 @@ public class User extends RealmObject {
     private String email;
     private String password;
     private RealmList<TODOList> list;
+    private boolean isLoggedIn;
 
     public User() {
     }
@@ -36,5 +37,13 @@ public class User extends RealmObject {
 
     public RealmList<TODOList> getList() {
         return list;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 }

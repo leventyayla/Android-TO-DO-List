@@ -2,8 +2,12 @@ package tr.com.leventyayla.to_dolist.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -27,17 +31,32 @@ public class StartUpActivity extends AppCompatActivity implements View.OnClickLi
 
         realm = Realm.getDefaultInstance();
 
+        User user = realm.where(User.class).equalTo("isLoggedIn", true).findFirst();
+        if (user != null){
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         username = findViewById(R.id.et_username);
         password = findViewById(R.id.et_password);
         findViewById(R.id.btn_login).setOnClickListener(this);
         findViewById(R.id.btn_sing_up).setOnClickListener(this);
         emailValidator = new EmailValidator();
         username.addTextChangedListener(emailValidator);
+        password.setOnEditorActionListener((v, actionId, event) -> {
+            if  ((actionId == EditorInfo.IME_ACTION_DONE)) {
+                onClick(v);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.et_password:
             case R.id.btn_login:
                 login();        break;
             case R.id.btn_sing_up:
@@ -63,11 +82,11 @@ public class StartUpActivity extends AppCompatActivity implements View.OnClickLi
                 .findFirst();
 
         if (user != null){
-            Snackbar.make(
-                    this.password,
-                    "User id: " + user.getId(),
-                    Snackbar.LENGTH_LONG)
-                    .show();
+            realm.beginTransaction();
+            user.setLoggedIn(true);
+            realm.commitTransaction();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
         } else {
             Snackbar.make(
                     this.password,
@@ -95,8 +114,12 @@ public class StartUpActivity extends AppCompatActivity implements View.OnClickLi
                         final User createdUser = bgRealm.createObject(User.class, nextId);
                         createdUser.setEmail(username);
                         createdUser.setPassword(password);
+                        createdUser.setLoggedIn(true);
                     },
-                    () -> Snackbar.make(this.password, getResources().getString(R.string.created_user), Snackbar.LENGTH_LONG).show(),
+                    () -> {
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    },
                     error -> Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
             Snackbar.make(
@@ -105,5 +128,11 @@ public class StartUpActivity extends AppCompatActivity implements View.OnClickLi
                     Snackbar.LENGTH_LONG)
                     .show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        realm.close();
+        super.onDestroy();
     }
 }

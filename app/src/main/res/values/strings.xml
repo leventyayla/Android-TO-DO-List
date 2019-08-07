@@ -7,4 +7,5 @@
     <string name="invalid_inputs">Invalid data for e-mail or password!</string>
     <string name="created_user">User account created successfully.</string>
     <string name="already_registered">This e-mail address already registered!</string>
+    <string name="logout">Logout</string>
 </resources>
