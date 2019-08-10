@@ -12,11 +12,13 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import tr.com.leventyayla.to_dolist.R;
 import tr.com.leventyayla.to_dolist.models.User;
+import tr.com.leventyayla.to_dolist.utils.FragmentChanger;
 
 public class MainActivity extends AppCompatActivity {
 
-    Realm realm;
-    User user;
+    public Realm realm;
+    public User user;
+    public FragmentChanger fragmentChanger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         user = users.get(0);
+        fragmentChanger = new FragmentChanger(getSupportFragmentManager(), R.id.fragment_container);
 
     }
 
@@ -66,8 +69,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (fragmentChanger.isLastFragment()){
+            super.onBackPressed();
+        } else {
+            fragmentChanger.popBackStack(false);
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
     protected void onDestroy() {
-        realm.close();
+        if(realm != null) {
+            realm.close();
+        }
         super.onDestroy();
     }
 }

@@ -39,10 +39,6 @@ public class User extends RealmObject {
         return list;
     }
 
-    public boolean isLoggedIn() {
-        return isLoggedIn;
-    }
-
     public void setLoggedIn(boolean loggedIn) {
         isLoggedIn = loggedIn;
     }
