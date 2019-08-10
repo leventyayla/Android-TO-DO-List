@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ public class FragmentUserLists extends Fragment implements ListAdapter.ItemClick
         assert mainActivity.getSupportActionBar() != null;
         mainActivity.getSupportActionBar().setTitle("Lists for " + mainActivity.user.getEmail());
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        setMenuItemsVisibility();
 
         listAdapter = new ListAdapter(mainActivity.realm, mainActivity.user.getList(), this);
         user_lists = view.findViewById(R.id.user_lists);
@@ -68,6 +70,22 @@ public class FragmentUserLists extends Fragment implements ListAdapter.ItemClick
     @Override
     public void onRowClick(View view, int position, TODOList data) {
         mainActivity.fragmentChanger.setFragmentListItems(position);
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.create_list){
+            Toast.makeText(getContext(), "Create list", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
+    }
+
+    private void setMenuItemsVisibility(){
+        if (mainActivity.threeDotMenu != null){
+            mainActivity.threeDotMenu.getItem(0).setVisible(true);
+            mainActivity.threeDotMenu.getItem(1).setVisible(false);
+            mainActivity.threeDotMenu.getItem(2).setVisible(false);
+        }
     }
 
     @Override

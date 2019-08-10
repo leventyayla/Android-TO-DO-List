@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     public Realm realm;
     public User user;
     public FragmentChanger fragmentChanger;
+    public Menu threeDotMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +42,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         user = users.get(0);
-        fragmentChanger = new FragmentChanger(getSupportFragmentManager(), R.id.fragment_container);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        threeDotMenu = menu;
+        getMenuInflater().inflate(R.menu.main_menu, threeDotMenu);
+        fragmentChanger = new FragmentChanger(getSupportFragmentManager(), R.id.fragment_container);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -56,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.logout) {
             logout();
             return true;
+        } else {
+            return fragmentChanger.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void logout(){

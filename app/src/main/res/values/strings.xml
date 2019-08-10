@@ -8,4 +8,7 @@
     <string name="created_user">User account created successfully.</string>
     <string name="already_registered">This e-mail address already registered!</string>
     <string name="logout">Logout</string>
+    <string name="create_list">Create List</string>
+    <string name="create_item">Create Item</string>
+    <string name="export_list">Export List</string>
 </resources>

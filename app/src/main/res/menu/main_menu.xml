@@ -6,8 +6,22 @@
     tools:context=".MainActivity">
 
     <item
+        android:id="@+id/create_list"
+        android:title="@string/create_list"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/create_list_item"
+        android:title="@string/create_item"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/export"
+        android:title="@string/export_list"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/logout"
         android:title="@string/logout"
-        app:showAsAction="never">
-    </item>
+        app:showAsAction="never"/>
 </menu>

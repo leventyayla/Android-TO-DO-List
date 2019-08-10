@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -46,6 +47,27 @@ public class FragmentListItems extends Fragment {
         assert mainActivity.getSupportActionBar() != null;
         mainActivity.getSupportActionBar().setTitle(currentList.getName());
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setMenuItemsVisibility();
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.create_list_item:
+                Toast.makeText(getContext(), "Create item", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.export:
+                Toast.makeText(getContext(), "export", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+        return false;
+    }
+
+    private void setMenuItemsVisibility(){
+        if (mainActivity.threeDotMenu != null){
+            mainActivity.threeDotMenu.getItem(0).setVisible(false);
+            mainActivity.threeDotMenu.getItem(1).setVisible(true);
+            mainActivity.threeDotMenu.getItem(2).setVisible(true);
+        }
     }
 
     @Override
