@@ -1,15 +1,24 @@
 package tr.com.leventyayla.to_dolist.models;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 
 public class TODOItem extends RealmObject {
 
     private String name;
     private String description;
-    private long deadline;
+    private Date deadline;
     private boolean isCompleted; //For status
 
     public TODOItem() {
+    }
+
+    public TODOItem(String name, String description, Date deadline, boolean isCompleted) {
+        this.name = name;
+        this.description = description;
+        this.deadline = deadline;
+        this.isCompleted = isCompleted;
     }
 
     public String getName() {
@@ -20,7 +29,7 @@ public class TODOItem extends RealmObject {
         return description;
     }
 
-    public long getDeadline() {
+    public Date getDeadline() {
         return deadline;
     }
 
@@ -32,7 +41,7 @@ public class TODOItem extends RealmObject {
         this.description = description;
     }
 
-    public void setDeadline(long deadline) {
+    public void setDeadline(Date deadline) {
         this.deadline = deadline;
     }
 

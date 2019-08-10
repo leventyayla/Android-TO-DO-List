@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:hint="@string/username"
+            android:hint="@string/password"
             app:passwordToggleEnabled="true"
             app:layout_constraintBottom_toBottomOf="@id/guideline_inputs_bottom"
             app:layout_constraintEnd_toStartOf="@+id/guideline_right"

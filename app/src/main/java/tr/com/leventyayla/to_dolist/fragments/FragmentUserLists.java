@@ -1,17 +1,22 @@
 package tr.com.leventyayla.to_dolist.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -59,12 +64,6 @@ public class FragmentUserLists extends Fragment implements ListAdapter.ItemClick
         user_lists.addItemDecoration(dividerItemDecoration);
         user_lists.setLayoutManager(layoutManager);
         user_lists.setAdapter(listAdapter);
-
-        new Handler().postDelayed(() -> {
-            TODOList todoList = new TODOList("Kedi");
-            listAdapter.addItem(todoList);
-            //istAdapter.deleteItem(0);
-        }, 1500);
     }
 
     @Override
@@ -74,10 +73,32 @@ public class FragmentUserLists extends Fragment implements ListAdapter.ItemClick
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.create_list){
-            Toast.makeText(getContext(), "Create list", Toast.LENGTH_SHORT).show();
+            createList();
             return true;
         }
         return false;
+    }
+
+    @SuppressLint("InflateParams")
+    private void createList(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        builder.setTitle(mainActivity.getResources().getString(R.string.create_todo_list));
+        View view = LayoutInflater.from(mainActivity).inflate(R.layout.dialog_create_list, null, false);
+        EditText editText = view.findViewById(R.id.name);
+        builder.setView(view);
+
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            String text = editText.getText().toString();
+            if (!text.isEmpty()){
+                TODOList todoList = new TODOList(text);
+                listAdapter.addItem(todoList);
+            } else {
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 
     private void setMenuItemsVisibility(){

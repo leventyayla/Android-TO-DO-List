@@ -11,4 +11,10 @@
     <string name="create_list">Create List</string>
     <string name="create_item">Create Item</string>
     <string name="export_list">Export List</string>
+    <string name="create_todo_list">Create a TO-DO List</string>
+    <string name="create_todo_list_item">Create a TO-DO List Item</string>
+    <string name="enter_name">Enter a name</string>
+    <string name="enter_a_description">Enter a description</string>
+    <string name="select_deadline">Select Deadline</string>
+    <string name="select_deadline_time">Select deadline time</string>
 </resources>
