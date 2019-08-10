@@ -3,9 +3,7 @@ package tr.com.leventyayla.to_dolist.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,16 +22,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Date;
 
 import tr.com.leventyayla.to_dolist.R;
@@ -83,6 +74,13 @@ public class FragmentListItems extends Fragment implements ItemAdapter.ItemClick
         listItems.addItemDecoration(dividerItemDecoration);
         listItems.setLayoutManager(layoutManager);
         listItems.setAdapter(itemAdapter);
+
+        view.findViewById(R.id.filter).setOnClickListener(v -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mainActivity);
+            View dialogView = LayoutInflater.from(mainActivity).inflate(R.layout.dialog_filter, null);
+            bottomSheetDialog.setContentView(dialogView);
+            bottomSheetDialog.show();
+        });
     }
 
     @Override

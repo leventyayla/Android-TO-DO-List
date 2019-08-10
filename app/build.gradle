@@ -35,5 +35,4 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.github.florent37:singledateandtimepicker:2.1.5'
-    implementation 'com.allattentionhere:fabulousfilter:0.0.5'
 }
