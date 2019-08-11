@@ -17,4 +17,11 @@
     <string name="enter_a_description">Enter a description</string>
     <string name="select_deadline">Select Deadline</string>
     <string name="select_deadline_time">Select deadline time</string>
+    <string name="create_date">Create Date</string>
+    <string name="deadline">Deadline</string>
+    <string name="name">Name</string>
+    <string name="status">Status</string>
+    <string name="apply_sort">Apply Sort</string>
+    <string name="clear_filter">Clear Filter</string>
+    <string name="apply_filter">Apply Filter</string>
 </resources>

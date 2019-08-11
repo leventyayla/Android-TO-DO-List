@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,8 +54,8 @@ public class FragmentListItems extends Fragment implements ItemAdapter.ItemClick
         super.onViewCreated(view, savedInstanceState);
 
         if (mainActivity == null){
-            Toast.makeText(getContext(), this.getClass().getSimpleName() + " cannot loaded because of mainActivity error!",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), this.getClass().getSimpleName() +
+                            " cannot loaded because of mainActivity error!", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -76,33 +77,8 @@ public class FragmentListItems extends Fragment implements ItemAdapter.ItemClick
         listItems.setLayoutManager(layoutManager);
         listItems.setAdapter(itemAdapter);
 
-        view.findViewById(R.id.filter).setOnClickListener(v -> {
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mainActivity);
-            View dialogView = LayoutInflater.from(mainActivity).inflate(R.layout.dialog_filter, null);
-            EditText name_filter = dialogView.findViewById(R.id.name_filter);
-            CheckBox is_completed = dialogView.findViewById(R.id.is_completed);
-            CheckBox is_expired = dialogView.findViewById(R.id.is_expired);
-            if (itemAdapter.getFilterSettings() != null){
-                String filtered_name = itemAdapter.getFilterSettings().getName();
-                name_filter.setText(filtered_name != null ? filtered_name : "");
-                is_completed.setChecked(itemAdapter.getFilterSettings().isCompleted());
-                is_expired.setChecked(itemAdapter.getFilterSettings().isExpired());
-            }
-            bottomSheetDialog.setContentView(dialogView);
-            bottomSheetDialog.show();
-            dialogView.findViewById(R.id.apply_filter).setOnClickListener(view1 -> {
-                String name = name_filter.getText().toString();
-                boolean isCompleted = is_completed.isChecked();
-                boolean isExpired = is_expired.isChecked();
-
-                itemAdapter.filter(name, isCompleted, isExpired);
-                bottomSheetDialog.cancel();
-            });
-            dialogView.findViewById(R.id.clear_filter).setOnClickListener(view1 -> {
-                itemAdapter.clearFilter();
-                bottomSheetDialog.cancel();
-            });
-        });
+        view.findViewById(R.id.filter).setOnClickListener(v -> makeFilter());
+        view.findViewById(R.id.sort).setOnClickListener(v -> makeSort());
     }
 
     @Override
@@ -156,6 +132,50 @@ public class FragmentListItems extends Fragment implements ItemAdapter.ItemClick
         emailIntent.putExtra(Intent.EXTRA_TEXT   , fileContents);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "TO-DO Items Export");
         startActivity(Intent.createChooser(emailIntent , "Send email..."));
+    }
+
+    private void makeFilter(){
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mainActivity);
+        View dialogView = LayoutInflater.from(mainActivity).inflate(R.layout.dialog_filter, null);
+        EditText name_filter = dialogView.findViewById(R.id.name_filter);
+        CheckBox is_completed = dialogView.findViewById(R.id.is_completed);
+        CheckBox is_expired = dialogView.findViewById(R.id.is_expired);
+        if (itemAdapter.getFilterSettings() != null){
+            String filtered_name = itemAdapter.getFilterSettings().getName();
+            name_filter.setText(filtered_name != null ? filtered_name : "");
+            is_completed.setChecked(itemAdapter.getFilterSettings().isCompleted());
+            is_expired.setChecked(itemAdapter.getFilterSettings().isExpired());
+        }
+        bottomSheetDialog.setContentView(dialogView);
+        bottomSheetDialog.show();
+        dialogView.findViewById(R.id.apply_filter).setOnClickListener(view1 -> {
+            String name = name_filter.getText().toString();
+            boolean isCompleted = is_completed.isChecked();
+            boolean isExpired = is_expired.isChecked();
+
+            itemAdapter.filter(name, isCompleted, isExpired);
+            bottomSheetDialog.cancel();
+        });
+        dialogView.findViewById(R.id.clear_filter).setOnClickListener(view1 -> {
+            itemAdapter.clearFilter();
+            bottomSheetDialog.cancel();
+        });
+    }
+
+    private void makeSort(){
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mainActivity);
+        View dialogView = LayoutInflater.from(mainActivity).inflate(R.layout.dialog_sort, null);
+        bottomSheetDialog.setContentView(dialogView);
+        bottomSheetDialog.show();
+
+        dialogView.findViewById(R.id.apply_sort).setOnClickListener(view1 -> {
+            boolean sortCreateDate = ((RadioButton) dialogView.findViewById(R.id.sort_create_date)).isChecked();
+            boolean sortDeadline = ((RadioButton) dialogView.findViewById(R.id.sort_deadline)).isChecked();
+            boolean sortName = ((RadioButton) dialogView.findViewById(R.id.sort_name)).isChecked();
+            boolean sortStatus = ((RadioButton) dialogView.findViewById(R.id.sort_status)).isChecked();
+            itemAdapter.sort(sortCreateDate, sortDeadline, sortName, sortStatus);
+            bottomSheetDialog.cancel();
+        });
     }
 
     private void setMenuItemsVisibility(){

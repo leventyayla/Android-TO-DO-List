@@ -19,6 +19,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import tr.com.leventyayla.to_dolist.R;
 import tr.com.leventyayla.to_dolist.models.FilterSettings;
 import tr.com.leventyayla.to_dolist.models.TODOItem;
@@ -127,6 +128,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     public void clearFilter(){
         filteredList = list;
         filterSettings = null;
+        notifyDataSetChanged();
+    }
+
+    public void sort(boolean sortCreateDate, boolean sortDeadline, boolean sortName, boolean sortStatus){
+        RealmQuery<TODOItem> query = list.where();
+        if (sortCreateDate){
+            query = query.sort("createdTime", Sort.DESCENDING);
+        }
+        if (sortDeadline){
+            query = query.sort("deadline", Sort.DESCENDING);
+        }
+        if (sortName){
+            query = query.sort("name", Sort.DESCENDING);
+        }
+        if (sortStatus){
+            query = query.sort("isCompleted", Sort.DESCENDING);
+        }
+        RealmResults<TODOItem> results = query.findAll();
+        RealmList<TODOItem> filteredList = new RealmList<>();
+        filteredList.addAll(results.subList(0, results.size()));
+        this.filteredList = filteredList;
         notifyDataSetChanged();
     }
 

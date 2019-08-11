@@ -60,14 +60,13 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"
-        android:text="Apply Filter"
+        android:text="@string/apply_filter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/clear_filter"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/is_completed"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/clear_filter"
@@ -80,13 +79,12 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="16dp"
-        android:text="Clear Filter"
+        android:text="@string/clear_filter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/apply_filter"
         app:layout_constraintTop_toBottomOf="@+id/is_completed"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
