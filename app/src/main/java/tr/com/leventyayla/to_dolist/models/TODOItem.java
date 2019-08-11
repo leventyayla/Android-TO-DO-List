@@ -8,6 +8,7 @@ public class TODOItem extends RealmObject {
 
     private String name;
     private String description;
+    private Date createdTime = new Date();
     private Date deadline;
     private boolean isCompleted; //For status
 
@@ -31,6 +32,10 @@ public class TODOItem extends RealmObject {
 
     public Date getDeadline() {
         return deadline;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
     public void setName(String name) {

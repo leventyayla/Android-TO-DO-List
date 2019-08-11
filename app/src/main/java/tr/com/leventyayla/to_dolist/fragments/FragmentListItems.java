@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -78,8 +79,29 @@ public class FragmentListItems extends Fragment implements ItemAdapter.ItemClick
         view.findViewById(R.id.filter).setOnClickListener(v -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mainActivity);
             View dialogView = LayoutInflater.from(mainActivity).inflate(R.layout.dialog_filter, null);
+            EditText name_filter = dialogView.findViewById(R.id.name_filter);
+            CheckBox is_completed = dialogView.findViewById(R.id.is_completed);
+            CheckBox is_expired = dialogView.findViewById(R.id.is_expired);
+            if (itemAdapter.getFilterSettings() != null){
+                String filtered_name = itemAdapter.getFilterSettings().getName();
+                name_filter.setText(filtered_name != null ? filtered_name : "");
+                is_completed.setChecked(itemAdapter.getFilterSettings().isCompleted());
+                is_expired.setChecked(itemAdapter.getFilterSettings().isExpired());
+            }
             bottomSheetDialog.setContentView(dialogView);
             bottomSheetDialog.show();
+            dialogView.findViewById(R.id.apply_filter).setOnClickListener(view1 -> {
+                String name = name_filter.getText().toString();
+                boolean isCompleted = is_completed.isChecked();
+                boolean isExpired = is_expired.isChecked();
+
+                itemAdapter.filter(name, isCompleted, isExpired);
+                bottomSheetDialog.cancel();
+            });
+            dialogView.findViewById(R.id.clear_filter).setOnClickListener(view1 -> {
+                itemAdapter.clearFilter();
+                bottomSheetDialog.cancel();
+            });
         });
     }
 

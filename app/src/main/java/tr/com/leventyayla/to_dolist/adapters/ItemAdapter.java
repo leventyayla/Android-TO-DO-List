@@ -11,22 +11,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Date;
 import java.util.Objects;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import tr.com.leventyayla.to_dolist.R;
+import tr.com.leventyayla.to_dolist.models.FilterSettings;
 import tr.com.leventyayla.to_dolist.models.TODOItem;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> {
 
     private Realm realm;
     private RealmList<TODOItem> list;
+    private RealmList<TODOItem> filteredList;
     private ItemClickListener mClickListener;
+    private FilterSettings filterSettings = null;
 
     public ItemAdapter(Realm realm, RealmList<TODOItem> list, ItemClickListener itemClickListener) {
         this.realm = realm;
         this.list = list;
+        this.filteredList = this.list;
         this.mClickListener = itemClickListener;
         list.addChangeListener(todoLists -> Log.d(this.getClass().getSimpleName(), "todoListItem changed on db."));
     }
@@ -46,7 +54,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             delete.setOnClickListener(v -> deleteItem(getAdapterPosition()));
             name.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 realm.executeTransaction(realm -> {
-                    Objects.requireNonNull(list.get(getAdapterPosition())).setCompleted(isChecked);
+                    Objects.requireNonNull(filteredList.get(getAdapterPosition())).setCompleted(isChecked);
                 });
             });
         }
@@ -54,7 +62,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         @Override
         public void onClick(View view) {
             if (mClickListener != null){
-                mClickListener.onRowClick(view, getAdapterPosition(), list.get(getAdapterPosition()));
+                mClickListener.onRowClick(view, getAdapterPosition(), filteredList.get(getAdapterPosition()));
             }
         }
     }
@@ -72,7 +80,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        TODOItem temp = list.get(position);
+        TODOItem temp = filteredList.get(position);
 
         holder.name.setText(temp != null ? temp.getName() : "");
         holder.name.setChecked(temp != null && temp.isCompleted());
@@ -81,20 +89,51 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return filteredList.size();
+    }
+
+    public FilterSettings getFilterSettings(){
+        return filterSettings;
     }
 
     public void addItem(TODOItem item){
         realm.executeTransaction(realm -> {
-            list.add(item);
-            notifyItemInserted(list.size() - 1);
+            filteredList.add(item);
+            notifyItemInserted(filteredList.size() - 1);
         });
+    }
+
+    public void filter(String name, boolean isCompleted, boolean isExpired){
+        RealmQuery<TODOItem> query = list.where().equalTo("isCompleted", isCompleted);
+        if (isExpired){
+            query = query.lessThan("deadline", new Date());
+        } else {
+            query = query.greaterThan("deadline", new Date());
+        }
+        if (name != null && !name.isEmpty()){
+            query = query.contains("name", name, Case.INSENSITIVE);
+            filterSettings = new FilterSettings(name, isCompleted, isExpired);
+        } else {
+            filterSettings = new FilterSettings(null, isCompleted, isExpired);
+        }
+
+        RealmResults<TODOItem> results = query.findAll();
+        RealmList<TODOItem> filteredList = new RealmList<>();
+        filteredList.addAll(results.subList(0, results.size()));
+        this.filteredList = filteredList;
+        notifyDataSetChanged();
+    }
+
+    public void clearFilter(){
+        filteredList = list;
+        filterSettings = null;
+        notifyDataSetChanged();
     }
 
     private void deleteItem(int pos){
         realm.executeTransaction(realm -> {
             try{
-                list.deleteFromRealm(pos);
+                filteredList.deleteFromRealm(pos);
                 notifyItemRemoved(pos);
             } catch (ArrayIndexOutOfBoundsException ex){
                 Log.e(this.getClass().getSimpleName(), "deleteItem function triggered with wrong position!");
